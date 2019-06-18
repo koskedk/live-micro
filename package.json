@@ -5,19 +5,36 @@
   "repository": "https://github.com/koskedk/live-micro.git",
   "author": "Koske Kimutai <koskedk@live.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-all": "yarn install:config && yarn install:topbar",
+    "install:config": "yarn install",
+    "install:topbar": "cd ./topbar/ && yarn install",
+    "start": "concurrently --kill-others --kill-others-on-fail -p name --names \"config,common-deps,topbar\" \"yarn start:config\" \"yarn start:common-deps\" \"yarn start:topbar\"",
+    "start:config": "webpack-dev-server --config ./webpack.config.config.dev.js --port 8233",
+    "start:common-deps": "webpack-dev-server --config ./webpack.common-deps.config.dev.js --port 8234",
+    "start:topbar": "cd ./topbar/ && webpack-dev-server --config ./webpack.dev.js --port 8235",
+    "build": "yarn run build:config && yarn run build:common-deps && yarn run build:topbar",
+    "build:config": "webpack --config ./webpack.config.config.js -p",
+    "build:common-deps": "webpack --config ./webpack.common-deps.config.js -p",
+    "build:topbar": "cd ./topbar/ && webpack --config ./webpack.config.js -p",
+    "audit-fix:config": "yarn audit-fix:config",
+    "audit-fix:topbar": "yarn audit-fix:topbar",
+    "postinstall": "node postinstall.js"
+  },
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.6",
-    "clean-webpack-plugin": "^3.0.0",
+    "clean-webpack-plugin": "0.1.19",
     "concurrently": "^4.1.0",
-    "copy-webpack-plugin": "^5.0.3",
+    "copy-webpack-plugin": "4.5.2",
     "css-loader": "^3.0.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.34.0",
-    "webpack-cli": "^3.3.4",
-    "webpack-dev-server": "^3.7.2"
+    "webpack": "4.17.1",
+    "webpack-cli": "3.1.0",
+    "webpack-dev-server": "^3.1.14"
   }
 }

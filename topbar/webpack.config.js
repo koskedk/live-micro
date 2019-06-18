@@ -5,12 +5,12 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/config.js',
+  entry: path.resolve(__dirname, 'src/topbar.js'),
   output: {
-    filename: 'config.js',
-    library: 'config',
+    filename: 'topbar.js',
+    library: 'topbar',
     libraryTarget: 'amd',
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'build/topbar'),
   },
   mode: 'production',
   module: {
@@ -29,6 +29,7 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              modules: true,
               localIdentName: '[path][name]__[local]',
             },
           },
@@ -50,6 +51,23 @@ module.exports = {
         exclude: [/\.krem.css$/],
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.krem.css$/,
+        exclude: [path.resolve(__dirname, 'node_modules')],
+        use: [
+          {
+            loader: 'kremling-loader',
+            options: {
+              namespace: 'app-dashboard-ui',
+              postcss: {
+                plugins: {
+                  'autoprefixer': {}
+                }
+              }
+            },
+          },
+        ]
+      },
     ],
   },
   resolve: {
@@ -59,16 +77,19 @@ module.exports = {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin([
-      {from: path.resolve(__dirname, 'src/index.html')},
-      {from: path.resolve(__dirname, 'src/styles.css')},
+    new CleanWebpackPlugin(['build/topbar']),
+    CopyWebpackPlugin([
+      {from: path.resolve(__dirname, 'src/topbar.js')}
     ]),
-    new CleanWebpackPlugin(['build']),
   ],
   devtool: 'source-map',
   externals: [
     /^lodash$/,
     /^single-spa$/,
+    /^react$/,
+    /^react\/lib.*/,
+    /^react-dom$/,
+    /.*react-dom.*/,
     /^rxjs\/?.*$/,
   ],
 };
